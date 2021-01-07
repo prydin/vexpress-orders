@@ -68,7 +68,7 @@ pipeline {
                                  usernamePassword(credentialsId: 'rabbitMqCreds', passwordVariable: 'RABBITMQ_PASSWORD', usernameVariable: 'RABBITMQ_USER')]) {
                     script {
                         def txt = readFile(file: 'templates/application-properties.tpl')
-                        txt = txt.replace('$RABBITMQ_IP', param.RABBITMQ_IP).
+                        txt = txt.replace('$RABBITMQ_IP', params.RABBITMQ_IP).
                                 replace('$RABBITMQ_USER', env.RABBITMQ_USER).
                                 replace('$RABBITMQ_PASSWORD', env.RABBITMQ_PASSWORD)
                         writeFile(file: "application.properties", text: txt)
