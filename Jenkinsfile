@@ -10,6 +10,7 @@ pipeline {
                     def gradle = readFile(file: 'build.gradle')
                     env.version = (gradle =~ /version\s*=\s*["'](.+)["']/)[0][1]
                     echo "Inferred version: ${env.version}"
+                    echo params
                 }
             }
         }
@@ -69,7 +70,7 @@ pipeline {
                     script {
                         def txt = readFile(file: 'templates/application-properties.tpl')
                         echo txt
-                        echo "${params.RABBITMQ_IP} ${env.RABBITMQ_USER}} ${env.RABBITMQ_PASSWORD}"
+                        echo "${params.RABBITMQ_IP} ${env.RABBITMQ_USER} ${env.RABBITMQ_PASSWORD}"
                         txt = txt.replace('$RABBITMQ_IP', params.RABBITMQ_IP).
                                 replace('$RABBITMQ_USER', env.RABBITMQ_USER).
                                 replace('$RABBITMQ_PASSWORD', env.RABBITMQ_PASSWORD)
