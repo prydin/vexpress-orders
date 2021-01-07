@@ -1,0 +1,10 @@
+count: 1
+catalogItemName: "java-14-ubuntu-18"
+version: "8"
+deploymentName: "vexpress-scheduling-app-#"
+projectName: "JenkinsTest"
+reason: "Deployment from Jenkins pipeline"
+inputs:
+  environment: "AWS"
+  user: "$USER"
+  password: "$PASSWORD"

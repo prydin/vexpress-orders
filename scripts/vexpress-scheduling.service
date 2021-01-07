@@ -1,0 +1,9 @@
+[Unit]
+Description=vExpress Order Management
+
+[Service]
+WorkingDirectory=/opt/vexpress-orders
+ExecStart=/usr/bin/java -Xmx512m -jar /opt/vexpress-orders/vexpress-orders.jar
+
+[Install]
+WantedBy=multi-user.target
