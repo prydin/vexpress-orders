@@ -29,7 +29,7 @@ pipeline {
 
         stage('Publish') {
             steps {
-                archiveArtifacts(artifacts: "build/libs/vexpress-scheduling-${env.version}.jar", fingerprint: true, onlyIfSuccessful: true)
+                archiveArtifacts(artifacts: "build/libs/vexpress-orders-${env.version}.jar", fingerprint: true, onlyIfSuccessful: true)
             }
         }
 
@@ -85,7 +85,7 @@ pipeline {
                             sleep time: 10, unit: 'SECONDS'
                             sshPut remote: remote, from: 'application.properties', into: '/tmp'
                         }
-                        sshPut remote: remote, from: 'scripts/vexpress-scheduling.service', into: '/tmp'
+                        sshPut remote: remote, from: 'scripts/vexpress-orders.service', into: '/tmp'
                         sshPut remote: remote, from: 'scripts/configureAppserver.sh', into: '/tmp'
                         sshCommand remote: remote, command: 'chmod +x /tmp/configureAppserver.sh'
                         sshCommand remote: remote, sudo: true, command: "/tmp/configureAppserver.sh ${USER} ${env.apiUser} ${env.apiToken} ${env.BUILD_URL} ${env.version}"
