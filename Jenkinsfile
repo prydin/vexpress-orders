@@ -69,8 +69,6 @@ pipeline {
                                  usernamePassword(credentialsId: 'rabbitMqCreds', passwordVariable: 'RABBITMQ_PASSWORD', usernameVariable: 'RABBITMQ_USER')]) {
                     script {
                         def txt = readFile(file: 'templates/application-properties.tpl')
-                        echo txt
-                        echo "${env.RABBITMQ_IP} ${env.RABBITMQ_USER} ${env.RABBITMQ_PASSWORD}"
                         txt = txt.replace('$RABBITMQ_IP', env.RABBITMQ_IP).
                                 replace('$RABBITMQ_USER', env.RABBITMQ_USER).
                                 replace('$RABBITMQ_PASSWORD', env.RABBITMQ_PASSWORD)
