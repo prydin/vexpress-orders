@@ -70,6 +70,7 @@ pipeline {
                     script {
                         def txt = readFile(file: 'templates/application-properties.tpl')
                         echo txt
+                        echo $params
                         echo "${params.RABBITMQ_IP} ${env.RABBITMQ_USER} ${env.RABBITMQ_PASSWORD}"
                         txt = txt.replace('$RABBITMQ_IP', params.RABBITMQ_IP).
                                 replace('$RABBITMQ_USER', env.RABBITMQ_USER).
