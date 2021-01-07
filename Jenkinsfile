@@ -10,7 +10,7 @@ pipeline {
                     def gradle = readFile(file: 'build.gradle')
                     env.version = (gradle =~ /version\s*=\s*["'](.+)["']/)[0][1]
                     echo "Inferred version: ${env.version}"
-                    echo params
+                    echo "$params"
                 }
             }
         }
