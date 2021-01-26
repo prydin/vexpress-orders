@@ -11,6 +11,7 @@ pipeline {
                     env.version = (gradle =~ /version\s*=\s*["'](.+)["']/)[0][1]
                     echo "Inferred version: ${env.version}"
                     env.RABBITMQ_IP = params.RABBITMQ_IP
+                    print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                 }
             }
         }
