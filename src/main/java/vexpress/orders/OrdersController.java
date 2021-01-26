@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OrdersController {
-  @Autowired private Config config;
   @Autowired RabbitTemplate rabbitTemplate;
+  @Autowired private Config config;
 
   @GetMapping(path = "/healthcheck", produces = "text/plain")
   public String healthCheck() {
     return "OK";
   }
 
-  @PostMapping(path = "/order", consumes = "application/json", produces = "application/json")
+  @PostMapping(path = "/orders", consumes = "application/json", produces = "application/json")
   public OrderResponse placeOrder(@RequestBody final SchedulingRequest order)
       throws JsonProcessingException {
     order.setTrackingNumber(UUID.randomUUID().toString());
