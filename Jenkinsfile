@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(defaultValue: '', description: 'The RabbitMQ broker address', name: 'RABBITMQ_ÌP', trim: true)
+        string(defaultValue: '', description: 'The RabbitMQ broker address', name: 'RABBITMQ_IP', trim: true)
     }
 
     stages {
