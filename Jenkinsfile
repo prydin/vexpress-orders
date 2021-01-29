@@ -1,12 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        string(defaultValue: '', description: 'The RabbitMQ broker address', name: 'RABBITMQ_ÌP', trim: true)
+    }
+
     stages {
         stage('Init') {
             steps {
                 script {
-                    properties([parameters([string(defaultValue: '',
-                            description: 'The RabbitMQ broker address', name: 'RABBITMQ_ÌP', trim: true)])])
                     def gradle = readFile(file: 'build.gradle')
                     env.version = (gradle =~ /version\s*=\s*["'](.+)["']/)[0][1]
                     echo "Inferred version: ${env.version}"
