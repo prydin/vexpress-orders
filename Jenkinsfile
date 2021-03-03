@@ -13,6 +13,9 @@ pipeline {
                     env.version = (gradle =~ /version\s*=\s*["'](.+)["']/)[0][1]
                     echo "Inferred version: ${env.version}"
                     env.RABBITMQ_IP = params.RABBITMQ_IP
+                    if (!env.RABBITMQ_IP) {
+                        env.RABBITMQ_IP = getDefaultRabbitMqIp()
+                    }
                     print "${env} ${params}"
                     print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                 }
@@ -98,6 +101,15 @@ pipeline {
                 }
             }
         }
+        stage("Finalize") {
+            steps {
+                // Store build state
+                withAWS(credentials: 'jenkins') {
+                    writeJSON(file: 'state.json', json: ['url': "http://${env.appIp}:8080"])
+                    s3Upload(file: 'state.json', bucket: 'prydin-build-states', path: 'vexpress/orders/prod/state.json')
+                }
+            }
+        }
     }
 }
 
@@ -107,5 +119,15 @@ def getInternalAddress(id, resourceName) {
             expandResources: true
     )
     return dep.resources.find({ it.name == resourceName }).properties.networks[0].address
+}
+
+def getDefaultRabbitMqIp() {
+    // Store build state
+    withAWS(credentials: 'jenkins') {
+        s3Download(file: 'state.json', bucket: 'prydin-build-states', path: 'vexpress/scheduling/prod/state.json', force: true)
+        def json = readJSON(file: 'state.json')
+        print("Found deployment record: " + json)
+        return json.rabbitMqIp
+    }
 }
 
