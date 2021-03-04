@@ -109,7 +109,7 @@ stages {
             // Store build state
             withAWS(credentials: 'jenkins') {
                 writeJSON(file: 'state.json', json: ['url': "http://${env.appIp}:8080"])
-                s3Upload(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/orders/${env.ENVIRONMENT}/state.json')
+                s3Upload(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/orders/${env.ENVIRONMENT}/state.json")
             }
         }
     }
