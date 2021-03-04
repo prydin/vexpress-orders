@@ -4,6 +4,7 @@ pipeline {
     parameters {
         string(defaultValue: '', description: 'The RabbitMQ broker address', name: 'RABBITMQ_IP', trim: true)
         string(defaultValue: 'dev', description: 'Target environment', name: 'ENVIRONMENT', trim: true)
+        string(defaultValue: '', description: 'Scheduling environment', name: 'SCHEDULING_ENV', trim: true)
     }
 
     stages {
@@ -20,6 +21,7 @@ pipeline {
                     print "${env} ${params}"
                     print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                     env.ENVIRONMENT = params.ENVIRONMENT
+                    env.SCHDULING_ENV = params.SCHEDULING_ENV ? params.SCHEDULING_ENV : params.ENVIRONMENT
                 }
             }
         }
@@ -124,9 +126,8 @@ def getInternalAddress(id, resourceName) {
 }
 
 def getDefaultRabbitMqIp() {
-    // Store build state
     withAWS(credentials: 'jenkins') {
-        s3Download(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/scheduling/${env.ENVIRONMENT}/state.json", force: true)
+        s3Download(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/scheduling/${env.SCHEDULING_ENV}/state.json", force: true)
         def json = readJSON(file: 'state.json')
         print("Found deployment record: " + json)
         return json.rabbitMqIp
