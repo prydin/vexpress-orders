@@ -20,7 +20,6 @@ pipeline {
                     print "${env} ${params}"
                     print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                     env.ENVIRONMENT = params.ENVIRONMENT
-                    getDefaultRabbitMqIp()
                 }
             }
         }
@@ -127,7 +126,6 @@ def getInternalAddress(id, resourceName) {
 def getDefaultRabbitMqIp() {
     // Store build state
     withAWS(credentials: 'jenkins') {
-        print "vexpress/scheduling/${env.ENVIRONMENT}/state.json"
         s3Download(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/scheduling/${env.ENVIRONMENT}/state.json", force: true)
         def json = readJSON(file: 'state.json')
         print("Found deployment record: " + json)
