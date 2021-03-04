@@ -14,6 +14,7 @@ pipeline {
                     def gradle = readFile(file: 'build.gradle')
                     env.version = (gradle =~ /version\s*=\s*["'](.+)["']/)[0][1]
                     echo "Inferred version: ${env.version}"
+                    env.SCHDULING_ENV = params.SCHEDULING_ENV ? params.SCHEDULING_ENV : params.ENVIRONMENT
                     env.RABBITMQ_IP = params.RABBITMQ_IP
                     if (!env.RABBITMQ_IP) {
                         env.RABBITMQ_IP = getDefaultRabbitMqIp()
@@ -21,7 +22,6 @@ pipeline {
                     print "${env} ${params}"
                     print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                     env.ENVIRONMENT = params.ENVIRONMENT
-                    env.SCHDULING_ENV = params.SCHEDULING_ENV ? params.SCHEDULING_ENV : params.ENVIRONMENT
                 }
             }
         }
