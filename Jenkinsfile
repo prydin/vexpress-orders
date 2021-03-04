@@ -20,6 +20,7 @@ pipeline {
                     print "${env} ${params}"
                     print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                     env.ENVIRONMENT = params.ENVIRONMENT
+                    getDefaultRabbitMqIp()
                 }
             }
         }
