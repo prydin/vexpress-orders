@@ -114,7 +114,6 @@ stages {
         }
     }
 }
-}
 
 def getInternalAddress(id, resourceName) {
     def dep = vraGetDeployment(
