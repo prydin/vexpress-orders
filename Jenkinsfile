@@ -5,6 +5,8 @@ pipeline {
         string(defaultValue: '', description: 'The RabbitMQ broker address', name: 'RABBITMQ_IP', trim: true)
         string(defaultValue: 'dev', description: 'Target environment', name: 'ENVIRONMENT', trim: true)
         string(defaultValue: '', description: 'Scheduling environment', name: 'SCHEDULING_ENV', trim: true)
+        string(defaultValue: 'JenkinsTest', description: 'Project', name: 'PROJECT', trim: true)
+        string(defaultValue: 'AWS', description: 'Cloud', name: 'CLOUD', trim: true)
     }
 
     stages {
@@ -23,6 +25,8 @@ pipeline {
                     print "${env} ${params}"
                     print "${env.RABBITMQ_IP} ${params.RABBITMQ_IP}"
                     env.ENVIRONMENT = params.ENVIRONMENT
+                    env.PROJECT = params.PROJECT ? params.PROJECT : "JenkinsTest" // TODO: Change to Virtual Express
+                    env.CLOUD = params.CLOUD ? params.CLOUD : "AWS"
                 }
             }
         }
@@ -63,9 +67,11 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'sshCreds', passwordVariable: 'PASSWORD', usernameVariable: 'USER')]) {
                     script {
                         def depId = vraDeployFromCatalog(
+                                trustSelfSignedCert: true,
                                 configFormat: "yaml",
                                 config: readFile('infra/appserver.yaml'))[0].id
                         vraWaitForAddress(
+                                trustSelfSignedCert: true,
                                 deploymentId: depId,
                                 resourceName: 'JavaServer')[0]
                         env.appIp = getInternalAddress(depId, "JavaServer")
@@ -110,7 +116,7 @@ pipeline {
         stage("Finalize") {
             steps {
                 // Store build state
-                withAWS(credentials: 'jenkins') {
+                withAWS(credentials: 'jenkins', region: 'us-west-1') {
                     writeJSON(file: 'state.json', json: ['url': "http://${env.appIp}:8080", 'deploymentIds': [env.depId]])
                     s3Upload(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/orders/${env.ENVIRONMENT}/state.json")
                 }
@@ -121,6 +127,7 @@ pipeline {
 
 def getInternalAddress(id, resourceName) {
     def dep = vraGetDeployment(
+            trustSelfSignedCert: true,
             deploymentId: id,
             expandResources: true
     )
@@ -128,7 +135,7 @@ def getInternalAddress(id, resourceName) {
 }
 
 def getDefaultRabbitMqIp() {
-    withAWS(credentials: 'jenkins') {
+    withAWS(credentials: 'jenkins', region: 'us-west-1') {
         s3Download(file: 'state.json', bucket: 'prydin-build-states', path: "vexpress/scheduling/${env.SCHEDULING_ENV}/state.json", force: true)
         def json = readJSON(file: 'state.json')
         print("Found deployment record: " + json)

@@ -2,10 +2,10 @@ count: 1
 catalogItemName: "java-14-ubuntu-18"
 version: "10"
 deploymentName: "vexpress-orders-app-$ENVIRONMENT-#"
-projectName: "JenkinsTest"
+projectName: "$PROJECT"
 reason: "Deployment from Jenkins pipeline"
 inputs:
-  environment: "AWS"
+  environment: "$CLOUD"
   user: "$USER"
   password: "$PASSWORD"
   size: "tiny"
