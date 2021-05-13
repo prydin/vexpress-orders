@@ -73,6 +73,7 @@ pipeline {
                         vraWaitForAddress(
                                 trustSelfSignedCert: true,
                                 deploymentId: depId,
+                                timeout: 1800,
                                 resourceName: 'JavaServer')[0]
                         env.appIp = getInternalAddress(depId, "JavaServer")
                         echo "Deployed: ${depId} address: ${env.appIp}"
